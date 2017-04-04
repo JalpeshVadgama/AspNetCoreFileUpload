@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetFileUpload.Controllers
 {
@@ -45,11 +45,11 @@ namespace AspNetFileUpload.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> FileUpload(ICollection<FormFile> uploadedFiles)
+        public async Task<IActionResult> FileUpload(ICollection<IFormFile> uploadedFiles)
         {
             try
             {
-                var uploadFolderPath = Path.Combine(_hostingEnv.WebRootPath, "upload");
+                var uploadFolderPath = Path.Combine(_hostingEnv.WebRootPath, "UploadedFiles");
                 foreach (var file in uploadedFiles)
                 {
                     if (file.Length > 0)
