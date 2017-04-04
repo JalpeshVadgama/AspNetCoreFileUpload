@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using System.IO;
 
@@ -50,19 +47,26 @@ namespace AspNetFileUpload.Controllers
         [HttpPost]
         public async Task<IActionResult> FileUpload(ICollection<FormFile> uploadedFiles)
         {
-            var uploadFolderPath = Path.Combine(_hostingEnv.WebRootPath, "upload");
-            foreach (var file in uploadedFiles)
+            try
             {
-                if (file.Length > 0)
+                var uploadFolderPath = Path.Combine(_hostingEnv.WebRootPath, "upload");
+                foreach (var file in uploadedFiles)
                 {
-                    using (var fileStream = new FileStream(Path.Combine(uploadFolderPath, file.FileName), FileMode.Create))
+                    if (file.Length > 0)
                     {
-                        await file.CopyToAsync(fileStream);
+                        using (var fileStream = new FileStream(Path.Combine(uploadFolderPath, file.FileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
                     }
                 }
+                ViewBag.Message = "All file uploaded sucessfully";
             }
-            ViewBag.Message = "All file uploaded sucessfully";
-
+            catch (System.Exception exception)
+            {
+                ViewBag.Message ="Error Occured:" + exception.Message;
+                //Write code here to handle the exception properly.
+            }
         }
     }
 }
